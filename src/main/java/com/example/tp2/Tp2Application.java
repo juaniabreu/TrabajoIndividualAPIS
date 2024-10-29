@@ -14,12 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Tp2Application implements CommandLineRunner {
-    @Autowired
-    NumeroRepo numeroRepo;
-    @Autowired
-    CajaAhorroRepo cajaAhorroRepo;
-    @Autowired
-    private ClienteRepo clienteRepo;
+
 
     public static void main(String[] args) {
         SpringApplication.run(Tp2Application.class, args);
@@ -27,9 +22,6 @@ public class Tp2Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
-
-
 
     }
 }

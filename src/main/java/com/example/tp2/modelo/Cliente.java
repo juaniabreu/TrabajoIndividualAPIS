@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.tp2.exceptions.CuentaException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -68,6 +69,10 @@ public class Cliente {
 	public void agregarCuenta(Cuenta cuenta) {
 		cuentas.add(cuenta);
 		cuenta.agregarClienteCuenta(this);
+	}
+
+	public List<Cuenta> getCuentas() {
+		return cuentas;
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.example.tp2.exceptions.CuentaException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,7 +19,7 @@ public abstract class Cuenta {
 	@JoinTable(name = "cliente_cuentas", joinColumns = @JoinColumn(name = "cuenta_id"),
 			inverseJoinColumns = @JoinColumn(name = "cliente_id"))
 	protected List<Cliente> clientes;
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	protected List<Movimiento> movimientos;
 	
 	
@@ -85,5 +86,13 @@ public abstract class Cuenta {
 
 	public boolean tieneNumero(String nroCuenta) {
 		return this.nroCuenta.equalsIgnoreCase(nroCuenta);
+	}
+
+	public String getNroCuenta() {
+		return nroCuenta;
+	}
+
+	public float getSaldo() {
+		return saldo;
 	}
 }
