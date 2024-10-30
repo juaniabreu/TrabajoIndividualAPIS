@@ -12,6 +12,12 @@ public class CuentaCorriente extends Cuenta {
 	private float costoMantenimiento;
 	private float tasaDiariaDescubierto;
 
+	public CuentaCorriente(Cliente cliente,float descubiertoHabilitado, float costoMantenimiento, float tasaDiariaDescubierto) {
+		super(cliente);
+		this.descubiertoHabilitado = descubiertoHabilitado;
+		this.costoMantenimiento = costoMantenimiento;
+		this.tasaDiariaDescubierto = tasaDiariaDescubierto;
+	}
 	public CuentaCorriente(Cliente cliente,float descubiertoHabilitado, float costoMantenimiento, float tasaDiariaDescubierto, int numero) {
 		super(cliente);
 		this.nroCuenta = "cc_"+numero;

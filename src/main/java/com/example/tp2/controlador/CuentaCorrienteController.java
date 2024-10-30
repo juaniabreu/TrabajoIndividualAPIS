@@ -1,17 +1,14 @@
 package com.example.tp2.controlador;
 
-import com.example.tp2.dto.CajaAhorroDTO;
-import com.example.tp2.dto.CuentaCorrienteDTO;
-import com.example.tp2.modelo.CajaAhorro;
 import com.example.tp2.modelo.CuentaCorriente;
-import com.example.tp2.repositorio.CajaAhorroRepo;
+import com.example.tp2.modelo.Numero;
 import com.example.tp2.repositorio.CuentaCorrienteRepo;
+import com.example.tp2.repositorio.NumeroRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,20 +17,17 @@ import java.util.Optional;
 public class CuentaCorrienteController {
 
     @Autowired
-    CuentaCorrienteRepo ccRepo;;
+    CuentaCorrienteRepo ccRepo;
+    @Autowired
+    NumeroRepo numeroRepo;
     @GetMapping()
     public String index(){
         return "Cuenta Corriente";
     }
     @GetMapping("/obtenerCC")
-    public ResponseEntity<List<CuentaCorrienteDTO>> obtenerCuentasCorriente(){
-        List<CuentaCorriente> cuentaCorrientes = ccRepo.findAll();
-        List<CuentaCorrienteDTO> dtos = new ArrayList<>();
-        for (CuentaCorriente cuentacorriente : cuentaCorrientes) {
-            CuentaCorrienteDTO dto = new CuentaCorrienteDTO(cuentacorriente);
-            dtos.add(dto);
-        }
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    public ResponseEntity<List<CuentaCorriente>> obtenerCuentasCorriente(){
+       List<CuentaCorriente> cuentaCorrientes = ccRepo.findAll();
+        return new ResponseEntity<>(cuentaCorrientes, HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<CuentaCorriente> obtenerCuentaCorriente(@PathVariable String id){
@@ -42,6 +36,8 @@ public class CuentaCorrienteController {
     }
     @PostMapping()
     public ResponseEntity<CuentaCorriente> crearCuentaCorriente(@RequestBody CuentaCorriente cuentaCorriente){
+        Numero numero = numeroRepo.findById(1).get();
+        cuentaCorriente.setNroCuenta("cc_"+numero.getNumero_cc());
         ccRepo.save(cuentaCorriente);
         return new ResponseEntity<>(cuentaCorriente, HttpStatus.CREATED);
     }

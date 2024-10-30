@@ -18,6 +18,7 @@ public abstract class Cuenta {
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "cliente_cuentas", joinColumns = @JoinColumn(name = "cuenta_id"),
 			inverseJoinColumns = @JoinColumn(name = "cliente_id"))
+	@JsonIgnoreProperties("cuentas")
 	protected List<Cliente> clientes;
 	@OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	protected List<Movimiento> movimientos;
@@ -90,6 +91,30 @@ public abstract class Cuenta {
 
 	public String getNroCuenta() {
 		return nroCuenta;
+	}
+
+	public void setNroCuenta(String nroCuenta) {
+		this.nroCuenta = nroCuenta;
+	}
+
+	public void setSaldo(float saldo) {
+		this.saldo = saldo;
+	}
+
+	public List<Cliente> getClientes() {
+		return clientes;
+	}
+
+	public void setClientes(List<Cliente> clientes) {
+		this.clientes = clientes;
+	}
+
+	public List<Movimiento> getMovimientos() {
+		return movimientos;
+	}
+
+	public void setMovimientos(List<Movimiento> movimientos) {
+		this.movimientos = movimientos;
 	}
 
 	public float getSaldo() {

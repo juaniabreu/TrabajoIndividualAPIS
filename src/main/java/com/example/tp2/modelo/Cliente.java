@@ -15,6 +15,7 @@ public class Cliente {
 	private String nombre;
 	private String documento;
 	@ManyToMany(mappedBy = "clientes",fetch = FetchType.EAGER)
+	@JsonIgnoreProperties("clientes")
 	private List<Cuenta> cuentas;
 
 	public Cliente() {}

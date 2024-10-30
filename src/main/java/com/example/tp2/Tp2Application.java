@@ -12,9 +12,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Optional;
+
 @SpringBootApplication
 public class Tp2Application implements CommandLineRunner {
 
+    @Autowired NumeroRepo numeroRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(Tp2Application.class, args);
@@ -22,6 +25,9 @@ public class Tp2Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+        if(numeroRepo.findById(1).isEmpty()) {
+            Numero numero = new Numero();
+            numeroRepo.save(numero);
+        }
     }
 }
