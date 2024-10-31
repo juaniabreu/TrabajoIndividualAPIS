@@ -15,6 +15,10 @@ public class CajaAhorro extends Cuenta {
 		this.tasaInteres = 1.8f;
 	}
 
+	public CajaAhorro(Cliente cliente) {
+		super(cliente);
+		this.tasaInteres = 1.8f;
+	}
 	public CajaAhorro() {
 
 	}

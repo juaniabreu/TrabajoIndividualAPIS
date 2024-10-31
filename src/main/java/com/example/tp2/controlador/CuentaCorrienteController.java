@@ -1,5 +1,6 @@
 package com.example.tp2.controlador;
 
+import com.example.tp2.modelo.Cliente;
 import com.example.tp2.modelo.CuentaCorriente;
 import com.example.tp2.modelo.Numero;
 import com.example.tp2.repositorio.CuentaCorrienteRepo;
@@ -34,12 +35,18 @@ public class CuentaCorrienteController {
         Optional<CuentaCorriente> cc = ccRepo.findById("cc_"+id);
         return cc.map(c -> new ResponseEntity<>(c,HttpStatus.OK)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    //CAMBIAR CLIENTE cliente por String Documento para buscar por documento
     @PostMapping()
-    public ResponseEntity<CuentaCorriente> crearCuentaCorriente(@RequestBody CuentaCorriente cuentaCorriente){
+    public ResponseEntity<CuentaCorriente> crearCuentaCorriente(@RequestBody Cliente cliente){
         Numero numero = numeroRepo.findById(1).get();
-        cuentaCorriente.setNroCuenta("cc_"+numero.getNumero_cc());
-        ccRepo.save(cuentaCorriente);
-        return new ResponseEntity<>(cuentaCorriente, HttpStatus.CREATED);
+        int x = numero.getNumero_cc() + 1;
+        CuentaCorriente newCC = new CuentaCorriente();
+        newCC.setNroCuenta("cc_" + x);
+        ccRepo.save(newCC);
+        numero.setNumero_cc(x);
+        numeroRepo.save(numero);
+        return new ResponseEntity<>(newCC, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

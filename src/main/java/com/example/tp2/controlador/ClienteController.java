@@ -1,5 +1,6 @@
 package com.example.tp2.controlador;
 
+import com.example.tp2.dao.ClienteDAO;
 import com.example.tp2.modelo.Cliente;
 import com.example.tp2.repositorio.ClienteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/cliente")
+    @RequestMapping("/cliente")
 public class ClienteController {
     @Autowired
     ClienteRepo clienteRepo;
+    @Autowired
+    private ClienteDAO clienteDAO;
+
     @GetMapping("/")
     public String index() {
         return "Hello World clientes";
@@ -23,6 +27,11 @@ public class ClienteController {
     public ResponseEntity<List<Cliente>> obtenerClientes() {
        List<Cliente> clientes = clienteRepo.findAll();
         return new ResponseEntity<>(clientes, HttpStatus.OK);
+    }
+    @GetMapping("/clientexdocumento/{documento}")
+    public ResponseEntity<Cliente> obtenerClienteporDocumento(@PathVariable String documento) {
+        Cliente cliente = clienteDAO.findClientByDocumento(documento);
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtenerCliente(@PathVariable int id) {

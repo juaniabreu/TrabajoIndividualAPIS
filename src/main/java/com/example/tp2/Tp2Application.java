@@ -1,5 +1,6 @@
 package com.example.tp2;
 
+import com.example.tp2.dao.ClienteDAO;
 import com.example.tp2.modelo.CajaAhorro;
 import com.example.tp2.modelo.Cliente;
 import com.example.tp2.modelo.CuentaCorriente;
@@ -17,6 +18,9 @@ import java.util.Optional;
 @SpringBootApplication
 public class Tp2Application implements CommandLineRunner {
 
+
+    @Autowired
+    ClienteDAO clienteDAO;
     @Autowired NumeroRepo numeroRepo;
 
     public static void main(String[] args) {
@@ -28,6 +32,7 @@ public class Tp2Application implements CommandLineRunner {
         if(numeroRepo.findById(1).isEmpty()) {
             Numero numero = new Numero();
             numeroRepo.save(numero);
+
         }
     }
 }

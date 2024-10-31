@@ -59,4 +59,15 @@ public class CuentaCorriente extends Cuenta {
 		return tasaDiariaDescubierto;
 	}
 
+	public void setDescubiertoHabilitado(float descubiertoHabilitado) {
+		this.descubiertoHabilitado = descubiertoHabilitado;
+	}
+
+	public void setCostoMantenimiento(float costoMantenimiento) {
+		this.costoMantenimiento = costoMantenimiento;
+	}
+
+	public void setTasaDiariaDescubierto(float tasaDiariaDescubierto) {
+		this.tasaDiariaDescubierto = tasaDiariaDescubierto;
+	}
 }
