@@ -32,7 +32,6 @@ public class Tp2Application implements CommandLineRunner {
         if(numeroRepo.findById(1).isEmpty()) {
             Numero numero = new Numero();
             numeroRepo.save(numero);
-
         }
     }
 }

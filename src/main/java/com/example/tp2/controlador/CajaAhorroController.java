@@ -1,5 +1,8 @@
 package com.example.tp2.controlador;
 
+import com.example.tp2.dao.CajaAhorroDAO;
+import com.example.tp2.dao.ClienteDAO;
+import com.example.tp2.dao.NumeroDAO;
 import com.example.tp2.modelo.CajaAhorro;
 import com.example.tp2.modelo.Cliente;
 import com.example.tp2.modelo.Numero;
@@ -19,11 +22,11 @@ import java.util.Optional;
 public class CajaAhorroController {
 
     @Autowired
-    ClienteRepo clienteRepo;
+    CajaAhorroDAO cajaAhorroDAO;
     @Autowired
-    CajaAhorroRepo caRepo;
+    NumeroDAO numeroDAO;
     @Autowired
-    NumeroRepo numeroRepo;
+    private ClienteDAO clienteDAO;
 
     @GetMapping()
     public String index() {
@@ -32,35 +35,38 @@ public class CajaAhorroController {
 
     @GetMapping("/obtenerCA")
     public ResponseEntity<List<CajaAhorro>> obtenerCajasAhorro() {
-        List<CajaAhorro> cajaAhorroList = caRepo.findAll();
+        List<CajaAhorro> cajaAhorroList = cajaAhorroDAO.findAll();
         return new ResponseEntity<>(cajaAhorroList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CajaAhorro> obtenerCajaAhorro(@PathVariable String id) {
-        Optional<CajaAhorro> ca = caRepo.findById("ca_" + id);
+        Optional<CajaAhorro> ca = cajaAhorroDAO.findById(id);
         return ca.map(c -> new ResponseEntity<>(c, HttpStatus.OK)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     //AGREGAR LAS FUNCIONES DE CADA CLASE
-    /*@PostMapping()
-    public ResponseEntity<CajaAhorro> crearCajaAhorro(@RequestBody String documento){
-
-        Numero numero = numeroRepo.findById(1).get();
+    @PostMapping("/{documento}")
+    public ResponseEntity<CajaAhorro> crearCajaAhorro(@PathVariable String documento){
+        Cliente cliente = clienteDAO.findClientByDocumento(documento);
+        if(cliente == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Numero numero = numeroDAO.findById(1).get();
         int x = numero.getNumero_ca() + 1;
         CajaAhorro newCaja = new CajaAhorro(cliente);
         newCaja.setNroCuenta("ca_"  + x);
-        caRepo.save(newCaja);
+        cajaAhorroDAO.save(newCaja);
         numero.setNumero_ca(x);
-        numeroRepo.save(numero);
+        numeroDAO.save(numero);
         return new ResponseEntity<>(newCaja, HttpStatus.CREATED);
     }
 
-     */
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCajaAhorro(@PathVariable String id){
-        caRepo.deleteById("ca_"+id);
+        cajaAhorroDAO.deleteById("ca_"+id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
