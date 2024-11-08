@@ -3,17 +3,18 @@ package com.example.tp2.controlador;
 import com.example.tp2.dao.ClienteDAO;
 import com.example.tp2.dao.CuentaCorrienteDAO;
 import com.example.tp2.dao.NumeroDAO;
-import com.example.tp2.modelo.Cliente;
-import com.example.tp2.modelo.CuentaCorriente;
-import com.example.tp2.modelo.Numero;
+import com.example.tp2.exceptions.CuentaException;
+import com.example.tp2.modelo.*;
 import com.example.tp2.repositorio.ClienteRepo;
 import com.example.tp2.repositorio.CuentaCorrienteRepo;
 import com.example.tp2.repositorio.NumeroRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +44,6 @@ public class CuentaCorrienteController {
         return cc.map(c -> new ResponseEntity<>(c,HttpStatus.OK)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    //AGREGAR FUNCIONES DE LA FUNCION
-    //Y QUE HACER CON LOS PARAMETROS, ESTABLECER DEFAULTS?O MANEJAR INGRESO DE DATOS?
     @PostMapping("/{documento}")
     public ResponseEntity<CuentaCorriente> crearCuentaCorriente(@PathVariable String documento){
         Cliente cliente = clienteDAO.findClientByDocumento(documento);
@@ -65,5 +64,77 @@ public class CuentaCorrienteController {
     public ResponseEntity<Void> eliminarCuentaCorriente(@PathVariable String id){
         cuentaCorrienteDAO.deleteById("cc_"+id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @PutMapping("agregarCliente/{id}")
+    public ResponseEntity<CuentaCorriente> agregarClienteACuenta(@PathVariable String id, @RequestBody Cliente cliente) throws CuentaException {
+        Optional<CuentaCorriente> ccOpt = cuentaCorrienteDAO.findById(id);
+        if (ccOpt.isPresent()) {
+            CuentaCorriente cc = ccOpt.get();
+            cc.agregarClienteCuenta(cliente);
+            cuentaCorrienteDAO.save(cc);
+            return new ResponseEntity<>(cc, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+
+    //CAMBIAR METODOS PARA CUENTA CORRIENTE
+    @PutMapping("/{id}/depositar")
+    public ResponseEntity<CuentaCorriente> depositar(@PathVariable String id, @RequestParam int cantidad) throws CuentaException {
+        Optional<CuentaCorriente> ccOpt = cuentaCorrienteDAO.findById(id);
+        if (ccOpt.isPresent()) {
+            CuentaCorriente cc = ccOpt.get();
+            cc.depositar(cantidad);
+            cuentaCorrienteDAO.save(cc);
+            return new ResponseEntity<>(cc, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/obtenerSaldo/{id}")
+    public ResponseEntity<Float> obtenerSaldo(@PathVariable String id){
+        Optional<CuentaCorriente> ccOpt = cuentaCorrienteDAO.findById(id);
+        if (ccOpt.isPresent()) {
+            float x = ccOpt.get().getSaldo();
+            return new ResponseEntity<>(x, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/verExtracciones/{id}")
+    public ResponseEntity<List<Movimiento>> verExtraccionesEntreFechas(@PathVariable String id,
+                                                                       @RequestParam("fechaDesde") @DateTimeFormat(pattern = "yyyy-mm-dd") Date fechaDesde,
+                                                                       @RequestParam("fechaHasta") @DateTimeFormat(pattern = "yyyy-mm-dd") Date fechaHasta){
+        Optional<CuentaCorriente> ccOpt = cuentaCorrienteDAO.findById(id);
+        if (ccOpt.isPresent()) {
+            CuentaCorriente cc = ccOpt.get();
+            List<Movimiento> movimientos = cc.verExtraccionesEntreFechas(fechaDesde, fechaHasta);
+            return new ResponseEntity<>(movimientos, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    @GetMapping("/verDepositos/{id}")
+    public ResponseEntity<List<Movimiento>> verDepositoEntreFechas(@PathVariable String id,
+                                                                   @RequestParam("fechaDesde") @DateTimeFormat(pattern = "yyyy-mm-dd")Date fechaDesde,
+                                                                   @RequestParam("fechaHasta") @DateTimeFormat(pattern = "yyyy-mm-dd") Date fechaHasta){
+        Optional<CuentaCorriente> ccOpt = cuentaCorrienteDAO.findById(id);
+        if (ccOpt.isPresent()) {
+            CuentaCorriente cc = ccOpt.get();
+            List<Movimiento> movimientos = cc.verDepositosEntreFechas(fechaDesde, fechaHasta);
+            return new ResponseEntity<>(movimientos, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<List<Movimiento>> verMovimientosporMes(@PathVariable String id, @RequestParam int mes){
+        Optional<CuentaCorriente> ccOpt = cuentaCorrienteDAO.findById(id);
+        if(ccOpt.isPresent()){
+            List<Movimiento> movimientos = ccOpt.get().movimientosDelMes(mes);
+            return new ResponseEntity<>(movimientos, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

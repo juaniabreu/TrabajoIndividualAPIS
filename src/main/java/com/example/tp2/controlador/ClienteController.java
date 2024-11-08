@@ -27,12 +27,12 @@ public class ClienteController {
        List<Cliente> clientes = clienteDAO.findAll();
         return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
-    @GetMapping("/{documento}")
+    @GetMapping("/{documento}")//AGREGAR MESAJE POR SI NO LO ENCUENTRA
     public ResponseEntity<Cliente> obtenerClienteporDocumento(@PathVariable String documento) {
         Cliente cliente = clienteDAO.findClientByDocumento(documento);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
-    @PostMapping()
+    @PostMapping("/crear")
     public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente) {
         clienteDAO.save(cliente);
         return new ResponseEntity<>(cliente, HttpStatus.CREATED);
@@ -42,4 +42,5 @@ public class ClienteController {
         clienteDAO.deleteByDocumento(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }
